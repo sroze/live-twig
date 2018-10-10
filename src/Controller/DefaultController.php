@@ -7,6 +7,9 @@ use App\Message\RegisterBet;
 use App\Message\ReportGameResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Live\Message\LiveViewUpdate;
+use Symfony\Component\Live\Subscription;
+use Symfony\Component\Live\SubscriptionList;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,9 +29,15 @@ class DefaultController extends AbstractController
     {
         $bets = $this->bus->dispatch(new GetBets());
 
-        return $this->render('index.html.twig', [
+        $response = $this->render('index.html.twig', [
             'bets' => $bets,
         ]);
+
+        $response->headers->set('X-Symfony-Live-Subscriptions', (new SubscriptionList([
+            new Subscription(['bets'], 'html'),
+        ]))->toString());
+
+        return $response;
     }
 
     /**
@@ -41,6 +50,11 @@ class DefaultController extends AbstractController
             $request->request->getInt('left'),
             $request->request->getInt('right')
         ));
+
+
+        $this->bus->dispatch(new LiveViewUpdate([
+            'bets'
+        ]));
 
         return $this->redirectToRoute('home');
     }

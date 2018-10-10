@@ -1,0 +1,8 @@
+<script>/*<![CDATA[*/
+  (function () {
+    const subscribeUrl = '{{ url('_live_subscribe', {subscriptionToken: '__TOKEN__'}) }}';
+    JSON.parse('{{ subscriptions | json_encode | raw }}').forEach(function(subscription) {
+      console.log('susbcribe: ', subscribeUrl.replace('__TOKEN__', subscription.token));
+    })
+  })();
+  /*]]>*/</script>

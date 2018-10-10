@@ -2,6 +2,8 @@ framework:
     messenger:
         transports:
             # Uncomment the following line to enable a transport named "amqp"
+            live: redis://localhost
 
         routing:
             # Route your messages to the transports
+            'Symfony\Component\Live\Message\LiveViewUpdate': live
