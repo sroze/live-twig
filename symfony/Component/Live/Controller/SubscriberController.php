@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Fragment\FragmentRendererInterface;
 use Symfony\Component\Live\Message\LiveViewUpdate;
 use Symfony\Component\Live\Subscription;
+use Symfony\Component\Live\Transport\LiveTransportInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Enhancers\StopWhenTimeLimitIsReachedReceiver;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
@@ -27,11 +28,16 @@ class SubscriberController
 
     public function __invoke(Request $request, $subscriptionToken)
     {
-        $token = Subscription::fromString($subscriptionToken);
+        if (!$this->transport instanceof LiveTransportInterface) {
+            throw new \RuntimeException('The transport "live" needs to be a live transport. Try to prefix its DSN with "live+" and use the "{tags}" placeholder.');
+        }
 
-        return new StreamedResponse(function() use ($token, $request) {
-            $receiver = (new StopWhenTimeLimitIsReachedReceiver($this->transport, 30));
-            $receiver->receive(function (?Envelope $envelope) use ($token, $request) {
+        $subscription = Subscription::fromString($subscriptionToken);
+        $transport = $this->transport->transportFor($subscription);
+
+        return new StreamedResponse(function() use ($transport, $subscription, $request) {
+            $receiver = (new StopWhenTimeLimitIsReachedReceiver($transport, 30));
+            $receiver->receive(function (?Envelope $envelope) use ($subscription, $request) {
                 if (null === $envelope) {
                     return;
                 }
@@ -41,9 +47,8 @@ class SubscriberController
                     throw new \RuntimeException(sprintf('Received a message of type "%s" while expecting only "%s".', get_class($message), LiveViewUpdate::class));
                 }
 
-
-                $renderFragment = $this->fragmentRenderer->render($token->getSource(), $request);
-                $extractedSubscription = $this->extract($renderFragment->getContent(), $token->getContentLocation());
+                $renderFragment = $this->fragmentRenderer->render($subscription->getSource(), $request);
+                $extractedSubscription = $this->extract($renderFragment->getContent(), $subscription->getContentLocation());
 
                 echo "UPDATE" . "\n";
                 echo $extractedSubscription. "\n";

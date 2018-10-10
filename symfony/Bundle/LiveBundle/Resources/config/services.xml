@@ -20,6 +20,12 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <service id="symfony.live.live_transport_factory" class="Symfony\Component\Live\Transport\LiveTransportFactory">
+            <argument type="service" id="messenger.transport_factory" />
+
+            <tag name="messenger.transport_factory" />
+        </service>
+
         <service id="symfony.live.live_view_update_handler" class="Symfony\Component\Live\MessageHandler\LiveViewUpdateHandler">
             <tag name="messenger.message_handler" />
         </service>

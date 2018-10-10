@@ -2,7 +2,7 @@ framework:
     messenger:
         transports:
             # Uncomment the following line to enable a transport named "amqp"
-            live: redis://localhost
+            live: live+redis://localhost/{tags}?broadcast=true
 
         routing:
             # Route your messages to the transports
