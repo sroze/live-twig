@@ -33,9 +33,11 @@ class DefaultController extends AbstractController
             'bets' => $bets,
         ]);
 
-        $response->headers->set('X-Symfony-Live-Subscriptions', (new SubscriptionList([
-            new Subscription(['bets'], 'html'),
-        ]))->toString());
+        // Could be "manual":
+        //
+        // $response->headers->set('X-Symfony-Live-Subscriptions', (new SubscriptionList([
+        //    new Subscription(['bets'], 'html'),
+        // ]))->toString());
 
         return $response;
     }

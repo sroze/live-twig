@@ -3,14 +3,19 @@
 namespace Symfony\Component\Live\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Live\Subscription;
 use Symfony\Component\Live\SubscriptionList;
 use Twig\Environment;
 
 class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
 {
     private $twig;
+
+    // TODO: Reset subscriptions with `kernel.reset`
+    private $extraSubscriptions = [];
 
     public function __construct(Environment $twig)
     {
@@ -27,7 +32,8 @@ class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $response = $event->getResponse();
-        if (null === $subscriptions = $response->headers->get('X-Symfony-Live-Subscriptions')) {
+        $subscriptions = $this->getSubscriptions($response);
+        if (empty($subscriptions)) {
             return;
         }
 
@@ -38,12 +44,27 @@ class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
             $toolbar = "\n".str_replace("\n", '', $this->twig->render(
                 '@Live/subscriber_js.html.twig',
                 array(
-                    'subscriptions' => SubscriptionList::fromString($subscriptions)->asArray(),
+                    'subscriptions' => (new SubscriptionList($subscriptions))->asArray(),
                 )
             ))."\n";
 
             $content = substr($content, 0, $pos).$toolbar.substr($content, $pos);
             $response->setContent($content);
         }
+    }
+
+    public function registerExtraSubscription(Subscription $subscription)
+    {
+        $this->extraSubscriptions[] = $subscription;
+    }
+
+    private function getSubscriptions(Response $response)
+    {
+        $subscriptions = [];
+        if (null !== $header = $response->headers->get('X-Symfony-Live-Subscriptions')) {
+            $subscriptions = SubscriptionList::fromString($header)->getSubscriptions();
+        }
+
+        return array_merge($subscriptions, $this->extraSubscriptions);
     }
 }

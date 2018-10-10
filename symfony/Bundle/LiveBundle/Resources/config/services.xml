@@ -22,5 +22,11 @@
         <service id="symfony.live.live_view_update_handler" class="Symfony\Component\Live\MessageHandler\LiveViewUpdateHandler">
             <tag name="messenger.message_handler" />
         </service>
+
+        <service id="symfony.live.twig_extension" class="Symfony\Component\Live\Twig\LiveExtension">
+            <argument type="service" id="symfony.live.inject_subscriber_listener" />
+
+            <tag name="twig.extension" />
+        </service>
     </services>
 </container>

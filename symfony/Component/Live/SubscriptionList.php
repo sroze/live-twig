@@ -14,6 +14,11 @@ class SubscriptionList
         $this->subscriptions = $subscriptions;
     }
 
+    public function getSubscriptions(): array
+    {
+        return $this->subscriptions;
+    }
+
     public static function fromString(string $string)
     {
         $list = json_decode(base64_decode($string), true);

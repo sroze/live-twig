@@ -10,6 +10,7 @@
     <button type="submit">Bet !</button>
 </form>
 
+{% liveSubscription 'bets' %}
 <h2>Bets</h2>
 <table>
     <thead>
@@ -27,4 +28,5 @@
     </tr>
     {% endfor %}
 </table>
+{% endLiveSubscription %}
 {% endblock %}
