@@ -50,11 +50,15 @@ class SubscriberController
                 $renderFragment = $this->fragmentRenderer->render($subscription->getSource(), $request);
                 $extractedSubscription = $this->extract($renderFragment->getContent(), $subscription->getContentLocation());
 
-                echo "UPDATE" . "\n";
-                echo $extractedSubscription. "\n";
+                echo "data: ".json_encode(['html' => $extractedSubscription])."\n\n";
+
+                ob_flush();
                 flush();
             });
-        });
+        }, 200, [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+        ]);
     }
 
     private function extract(string $content, string $location)

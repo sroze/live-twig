@@ -2,7 +2,25 @@
   (function () {
     const subscribeUrl = '{{ url('_live_subscribe', {subscriptionToken: '__TOKEN__'}) }}';
     JSON.parse('{{ subscriptions | json_encode | raw }}').forEach(function(subscription) {
-      console.log('susbcribe: ', subscribeUrl.replace('__TOKEN__', subscription.token));
+      const streamUrl = subscribeUrl.replace('__TOKEN__', subscription.token);
+      const source = new EventSource(streamUrl);
+      source.addEventListener('message', function(event) {
+        const { html } = JSON.parse(event.data);
+        const { contentLocation } = subscription;
+
+        const elementId = 'live-'+contentLocation;
+        console.log('Updated HTML of '+elementId);
+        
+        document.getElementById(elementId).innerHTML = html;
+      }, false);
+
+      source.addEventListener('open', function(){
+        console.log('stream opened');
+      }, false);
+
+      source.addEventListener('error', function(event) {
+        console.log('got error', event);
+      }, false)
     })
   })();
   /*]]>*/</script>

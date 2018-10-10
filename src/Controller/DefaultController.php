@@ -58,7 +58,6 @@ class DefaultController extends AbstractController
             $request->request->getInt('right')
         ));
 
-
         $this->bus->dispatch(new LiveViewUpdate([
             'bets',
             'game-'.$game,
