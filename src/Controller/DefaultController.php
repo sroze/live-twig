@@ -29,17 +29,22 @@ class DefaultController extends AbstractController
     {
         $bets = $this->bus->dispatch(new GetBets());
 
-        $response = $this->render('index.html.twig', [
+        return $this->render('index.html.twig', [
             'bets' => $bets,
         ]);
+    }
 
-        // Could be "manual":
-        //
-        // $response->headers->set('X-Symfony-Live-Subscriptions', (new SubscriptionList([
-        //    new Subscription(['bets'], 'html'),
-        // ]))->toString());
+    /**
+     * @Route("/bets/{game}", name="bets_for_game")
+     */
+    public function betsForGame($game)
+    {
+        $bets = $this->bus->dispatch(GetBets::forGame($game));
 
-        return $response;
+        return $this->render('game.html.twig', [
+            'bets' => $bets,
+            'game' => $game,
+        ]);
     }
 
     /**
@@ -48,14 +53,15 @@ class DefaultController extends AbstractController
     public function bet(Request $request)
     {
         $this->bus->dispatch(new RegisterBet(
-            $request->request->get('game'),
+            $game = $request->request->get('game'),
             $request->request->getInt('left'),
             $request->request->getInt('right')
         ));
 
 
         $this->bus->dispatch(new LiveViewUpdate([
-            'bets'
+            'bets',
+            'game-'.$game,
         ]));
 
         return $this->redirectToRoute('home');

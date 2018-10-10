@@ -10,23 +10,8 @@
     <button type="submit">Bet !</button>
 </form>
 
-{% liveSubscription 'bets' %}
 <h2>Bets</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Game</th>
-        <th>Left</th>
-        <th>Right</th>
-    </tr>
-    </thead>
-    {% for bet in bets %}
-    <tr>
-        <td>{{ bet.game }}</td>
-        <td>{{ bet.leftScore }}</td>
-        <td>{{ bet.rightScore }}</td>
-    </tr>
-    {% endfor %}
-</table>
+{% liveSubscription 'bets' %}
+    {% include "bets/list.html.twig" with {bets: bets} only %}
 {% endLiveSubscription %}
 {% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html.twig" %}
+{% block body %}
+<h2>Bets for game <strong>{{ game }}</strong></h2>
+{% liveSubscription 'game-'~game %}
+    {% include "bets/list.html.twig" with {bets: bets} only %}
+{% endLiveSubscription %}
+{% endblock %}
