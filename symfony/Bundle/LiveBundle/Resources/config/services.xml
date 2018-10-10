@@ -9,6 +9,7 @@
 
         <service id="symfony.live.subscriber_controller" class="Symfony\Component\Live\Controller\SubscriberController">
             <argument type="service" id="messenger.transport.live" />
+            <argument type="service" id="fragment.renderer.inline" />
 
             <tag name="controller.service_arguments" />
         </service>
@@ -25,6 +26,7 @@
 
         <service id="symfony.live.twig_extension" class="Symfony\Component\Live\Twig\LiveExtension">
             <argument type="service" id="symfony.live.inject_subscriber_listener" />
+            <argument type="service" id="request_stack" />
 
             <tag name="twig.extension" />
         </service>
