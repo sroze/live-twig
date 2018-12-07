@@ -11,8 +11,7 @@ use Symfony\Component\Live\Message\LiveViewUpdate;
 use Symfony\Component\Live\Subscription;
 use Symfony\Component\Live\Transport\LiveTransportInterface;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\Enhancers\StopWhenTimeLimitIsReachedReceiver;
-use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
+use Symfony\Component\Messenger\Transport\Receiver\StopWhenTimeLimitIsReachedReceiver;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class SubscriberController

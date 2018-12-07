@@ -42,7 +42,7 @@ class LiveTransport implements TransportInterface, LiveTransportInterface
     /**
      * {@inheritdoc}
      */
-    public function send(Envelope $envelope)
+    public function send(Envelope $envelope): Envelope
     {
         $message = $envelope->getMessage();
         if (!$message instanceof LiveViewUpdate) {

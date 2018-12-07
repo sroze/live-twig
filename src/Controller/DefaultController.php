@@ -10,16 +10,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Live\Message\LiveViewUpdate;
 use Symfony\Component\Live\Subscription;
 use Symfony\Component\Live\SubscriptionList;
+use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends AbstractController
 {
-    private $bus;
+    use HandleTrait;
+
+    private $messageBus;
 
     public function __construct(MessageBusInterface $bus)
     {
-        $this->bus = $bus;
+        $this->messageBus = $bus;
     }
 
     /**
@@ -27,7 +30,7 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        $bets = $this->bus->dispatch(new GetBets());
+        $bets = $this->handle(new GetBets());
 
         return $this->render('index.html.twig', [
             'bets' => $bets,
@@ -39,7 +42,7 @@ class DefaultController extends AbstractController
      */
     public function betsForGame($game)
     {
-        $bets = $this->bus->dispatch(GetBets::forGame($game));
+        $bets = $this->messageBus->dispatch(GetBets::forGame($game));
 
         return $this->render('game.html.twig', [
             'bets' => $bets,
@@ -52,13 +55,13 @@ class DefaultController extends AbstractController
      */
     public function bet(Request $request)
     {
-        $this->bus->dispatch(new RegisterBet(
+        $this->messageBus->dispatch(new RegisterBet(
             $game = $request->request->get('game'),
             $request->request->getInt('left'),
             $request->request->getInt('right')
         ));
 
-        $this->bus->dispatch(new LiveViewUpdate([
+        $this->messageBus->dispatch(new LiveViewUpdate([
             'bets',
             'game-'.$game,
         ]));
