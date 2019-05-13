@@ -1,0 +1,3 @@
+live_twig:
+    hub_url: "%env(MERCURE_PUBLISH_URL)%"
+    hub_token: "%env(MERCURE_TOKEN)%"

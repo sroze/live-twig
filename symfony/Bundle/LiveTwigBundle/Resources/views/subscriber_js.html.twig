@@ -1,0 +1,36 @@
+<script>/*<![CDATA[*/
+  (function () {
+    JSON.parse('{{ subscriptions | json_encode | raw }}').forEach(function(subscription) {
+      const url = new URL('{{ hub_url }}');
+      for (const tag of subscription.tags) {
+          url.searchParams.append('topic', tag);
+      }
+
+      const source = new EventSource(url);
+      source.addEventListener('message', async (event) => {
+        console.log('Refreshing fragment...');
+        const response = await fetch(subscription.url);
+        const html = await response.text();
+
+        const start = document.getElementById('fragment-s-'+subscription.identifier);
+        const nextSelector = '#fragment-e-'+subscription.identifier;
+
+        let htmlElement = start,
+          elementsToReplace = [],
+          until = true;
+        while (htmlElement = htmlElement.nextElementSibling) {
+          (until && htmlElement && !htmlElement.matches(nextSelector)) ? elementsToReplace.push(htmlElement) : until = false;
+        }
+
+        for (const elementToRemove of elementsToReplace) {
+          elementToRemove.parentNode.removeChild(elementToRemove);
+        }
+
+        start.insertAdjacentHTML('afterend', html);
+        console.log('Refreshed.');
+      }, false);
+
+      source.addEventListener('error', console.error, false)
+    })
+  })();
+  /*]]>*/</script>

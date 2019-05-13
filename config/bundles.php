@@ -14,5 +14,5 @@ return [
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true],
-    Symfony\Bundle\LiveBundle\LiveBundle::class => ['all' => true],
+    Symfony\Bundle\LiveTwigBundle\LiveTwigBundle::class => ['all' => true],
 ];

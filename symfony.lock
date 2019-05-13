@@ -296,6 +296,9 @@
     "symfony/polyfill-intl-icu": {
         "version": "1.9-dev"
     },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "1.9-dev"
     },

@@ -1,8 +1,8 @@
 <?php
 
-namespace Symfony\Component\Live\Message;
+namespace Symfony\Component\LiveTwig\Message;
 
-class LiveViewUpdate
+class LiveTwigUpdate
 {
     private $tags;
 

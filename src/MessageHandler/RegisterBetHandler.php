@@ -6,8 +6,9 @@ use App\Entity\Bet;
 use App\Message\RegisterBet;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
-class RegisterBetHandler implements MessageHandlerInterface
+class RegisterBetHandler implements MessageSubscriberInterface
 {
     private $entityManager;
 
@@ -25,5 +26,17 @@ class RegisterBetHandler implements MessageHandlerInterface
 
         $this->entityManager->persist($bet);
         $this->entityManager->flush();
+
+        var_dump('saved on _projection_');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getHandledMessages(): iterable
+    {
+        yield RegisterBet::class => [
+            'transport' => 'events_projection',
+        ];
     }
 }

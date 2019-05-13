@@ -1,7 +1,11 @@
 {% extends "base.html.twig" %}
 {% block body %}
 <h2>Bets for game <strong>{{ game }}</strong></h2>
-{% liveSubscription 'game-'~game %}
-    {% include "bets/list.html.twig" with {bets: bets} only %}
-{% endLiveSubscription %}
+
+{{
+    render_live(
+        controller('App\\Controller\\DefaultController::betList', { game: game }),
+        {'tags': ['bets', 'game-'~game]}
+    )
+}}
 {% endblock %}

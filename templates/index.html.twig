@@ -11,7 +11,10 @@
 </form>
 
 <h2>Bets</h2>
-{% liveSubscription 'bets' %}
-    {% include "bets/list.html.twig" with {bets: bets} only %}
-{% endLiveSubscription %}
+{{
+    render_live(
+        controller('App\\Controller\\DefaultController::betList'),
+        {'tags': ['bets']}
+    )
+}}
 {% endblock %}

@@ -4,12 +4,9 @@ namespace App\Controller;
 
 use App\Message\GetBets;
 use App\Message\RegisterBet;
-use App\Message\ReportGameResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Live\Message\LiveViewUpdate;
-use Symfony\Component\Live\Subscription;
-use Symfony\Component\Live\SubscriptionList;
+use Symfony\Component\LiveTwig\Message\LiveTwigUpdate;
 use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,11 +27,7 @@ class DefaultController extends AbstractController
      */
     public function index()
     {
-        $bets = $this->handle(new GetBets());
-
-        return $this->render('index.html.twig', [
-            'bets' => $bets,
-        ]);
+        return $this->render('index.html.twig');
     }
 
     /**
@@ -42,10 +35,7 @@ class DefaultController extends AbstractController
      */
     public function betsForGame($game)
     {
-        $bets = $this->messageBus->dispatch(GetBets::forGame($game));
-
         return $this->render('game.html.twig', [
-            'bets' => $bets,
             'game' => $game,
         ]);
     }
@@ -61,11 +51,22 @@ class DefaultController extends AbstractController
             $request->request->getInt('right')
         ));
 
-        $this->messageBus->dispatch(new LiveViewUpdate([
+        $this->messageBus->dispatch(new LiveTwigUpdate([
             'bets',
             'game-'.$game,
         ]));
 
         return $this->redirectToRoute('home');
+    }
+
+    public function betList(string $game = null)
+    {
+        $bets = $this->handle(
+            $game !== null ? GetBets::forGame($game) : GetBets::all()
+        );
+
+        return $this->render('bets/list.html.twig', [
+            'bets' => $bets,
+        ]);
     }
 }

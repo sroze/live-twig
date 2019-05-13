@@ -1,9 +1,16 @@
 framework:
     messenger:
         transports:
-            # Uncomment the following line to enable a transport named "amqp"
-            live: live+redis://localhost/{tags}?broadcast=true
+            events:
+                dsn: amqp://guest:guest@127.0.0.1/%2f/events
+                options:
+                    queues:
+                        3rdparty:
+                            binding_keys: [ 3rdparty ]
+                        projection:
+                            binding_keys: [ projection ]
+
+            events_3rdparty: amqp://guest:guest@127.0.0.1/%2f/events?queues[3rdparty]
+            events_projection: amqp://guest:guest@127.0.0.1/%2f/events?queues[projection]
 
         routing:
-            # Route your messages to the transports
-            'Symfony\Component\Live\Message\LiveViewUpdate': live

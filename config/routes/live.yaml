@@ -1,3 +1,0 @@
-_live:
-    resource: '@LiveBundle/Resources/config/routing.xml'
-    prefix: /_live

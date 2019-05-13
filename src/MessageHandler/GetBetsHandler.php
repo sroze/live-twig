@@ -6,6 +6,7 @@ use App\Entity\Bet;
 use App\Message\GetBets;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 class GetBetsHandler implements MessageHandlerInterface
 {

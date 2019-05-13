@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults public="false" />
+
+        <service id="Symfony\Component\LiveTwig\MessageHandler\LiveTwigUpdateHandler">
+            <argument>%live_twig.hub_url%</argument>
+            <argument>%live_twig.hub_token%</argument>
+            <tag name="messenger.message_handler" />
+        </service>
+
+        <service id="Symfony\Component\LiveTwig\Fragment\LiveTwigFragmentRenderer">
+            <argument type="service" id="fragment.renderer.inline" />
+            <argument type="service" id="uri_signer" />
+            <argument type="service" id="event_dispatcher" />
+
+            <tag name="kernel.fragment_renderer" alias="live" />
+        </service>
+
+        <service id="Symfony\Component\LiveTwig\EventListener\InjectSubscriberJavaScriptListener">
+            <argument type="service" id="twig" />
+            <argument>%live_twig.hub_url%</argument>
+
+            <tag name="kernel.event_subscriber" />
+        </service>
+    </services>
+</container>
