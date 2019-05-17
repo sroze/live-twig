@@ -17,13 +17,13 @@
             <argument type="service" id="fragment.renderer.inline" />
             <argument type="service" id="uri_signer" />
             <argument type="service" id="event_dispatcher" />
+            <argument>%live_twig.hub_url%</argument>
 
             <tag name="kernel.fragment_renderer" alias="live" />
         </service>
 
         <service id="Symfony\Component\LiveTwig\EventListener\InjectSubscriberJavaScriptListener">
             <argument type="service" id="twig" />
-            <argument>%live_twig.hub_url%</argument>
 
             <tag name="kernel.event_subscriber" />
         </service>

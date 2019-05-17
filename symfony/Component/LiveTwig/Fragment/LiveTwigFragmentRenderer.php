@@ -16,12 +16,18 @@ class LiveTwigFragmentRenderer extends RoutableFragmentRenderer
     private $inlineRenderer;
     private $signer;
     private $eventDispatcher;
+    private $hubUrl;
 
-    public function __construct(FragmentRendererInterface $inlineRenderer, UriSigner $signer, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        FragmentRendererInterface $inlineRenderer,
+        UriSigner $signer,
+        EventDispatcherInterface $eventDispatcher,
+        string $hubUrl
+    ) {
         $this->inlineRenderer = $inlineRenderer;
         $this->signer = $signer;
         $this->eventDispatcher = $eventDispatcher;
+        $this->hubUrl = $hubUrl;
     }
 
     /**
@@ -47,12 +53,10 @@ class LiveTwigFragmentRenderer extends RoutableFragmentRenderer
             $options['tags']
         ));
 
-        // Using <script> tags (instead of comments) for performance reasons: https://stackoverflow.com/a/36174526
-        $urlAttribute = ($options['with_url'] ?? false) ? ' data-url="'.$fragmentUri.'"' : '';
         $content =
-            '<script type="symfony/live-view" id="fragment-s-'.$fragmentId.'"'.$urlAttribute.'></script>'.
+            '<symfony-live-twig id="'.$fragmentId.'" url="'.$fragmentUri.'" tags="'.implode(',', $options['tags']).'" hub="'.$this->hubUrl.'">'.
             $response->getContent().
-            '<script type="symfony/live-view" id="fragment-e-'.$fragmentId.'"></script>'
+            '</symfony-live-twig>'
         ;
 
         $response->setContent($content);

@@ -14,17 +14,11 @@ use Twig\Environment;
 class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
 {
     private $twig;
+    private $hasSubscriptions = false;
 
-    /**
-     * @var RenderedLiveFragment[]
-     */
-    private $subscriptions = [];
-    private $hubUrl;
-
-    public function __construct(Environment $twig, string $hubUrl)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
-        $this->hubUrl = $hubUrl;
     }
 
     public static function getSubscribedEvents()
@@ -35,14 +29,14 @@ class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
         );
     }
 
-    public function onFragmentRenderer(RenderedLiveFragment $event)
+    public function onFragmentRenderer()
     {
-        $this->subscriptions[] = $event;
+        $this->hasSubscriptions = true;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMasterRequest() || !$this->hasSubscriptions) {
             return;
         }
 
@@ -54,13 +48,7 @@ class InjectSubscriberJavaScriptListener implements EventSubscriberInterface
             return;
         }
 
-        $toolbar = "\n".str_replace("\n", '', $this->twig->render(
-            '@LiveTwig/subscriber_js.html.twig',
-            array(
-                'hub_url' => $this->hubUrl,
-                'subscriptions' => $this->subscriptions,
-            )
-        ))."\n";
+        $toolbar = "\n".str_replace("\n", '', $this->twig->render('@LiveTwig/subscriber_js.html.twig'))."\n";
 
         $content = substr($content, 0, $pos).$toolbar.substr($content, $pos);
         $response->setContent($content);
