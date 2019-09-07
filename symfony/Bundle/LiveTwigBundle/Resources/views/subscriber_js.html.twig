@@ -1,36 +1,27 @@
-<script>/*<![CDATA[*/
-  (function () {
-    JSON.parse('{{ subscriptions | json_encode | raw }}').forEach(function(subscription) {
-      const url = new URL('{{ hub_url }}');
-      for (const tag of subscription.tags) {
+<script>
+class SymfonyLiveTwig extends HTMLElement {
+  constructor() {
+    super();
+      const url = new URL(
+        this.attributes.getNamedItem('hub').value
+      );
+
+      for (const tag of this.attributes.getNamedItem('tags').value.split(',')) {
           url.searchParams.append('topic', tag);
       }
 
-      const source = new EventSource(url);
-      source.addEventListener('message', async (event) => {
-        console.log('Refreshing fragment...');
-        const response = await fetch(subscription.url);
-        const html = await response.text();
+      const eventSource = new EventSource(url);
+      eventSource.onmessage = this.onMessage.bind(this);
+  }
 
-        const start = document.getElementById('fragment-s-'+subscription.identifier);
-        const nextSelector = '#fragment-e-'+subscription.identifier;
+  async onMessage() {
+    const response = await fetch(
+      this.attributes.getNamedItem('url').value
+    );
 
-        let htmlElement = start,
-          elementsToReplace = [],
-          until = true;
-        while (htmlElement = htmlElement.nextElementSibling) {
-          (until && htmlElement && !htmlElement.matches(nextSelector)) ? elementsToReplace.push(htmlElement) : until = false;
-        }
+    this.innerHTML = await response.text();
+  }
+}
 
-        for (const elementToRemove of elementsToReplace) {
-          elementToRemove.parentNode.removeChild(elementToRemove);
-        }
-
-        start.insertAdjacentHTML('afterend', html);
-        console.log('Refreshed.');
-      }, false);
-
-      source.addEventListener('error', console.error, false)
-    })
-  })();
-  /*]]>*/</script>
+customElements.define('symfony-live-twig', SymfonyLiveTwig);
+</script>
