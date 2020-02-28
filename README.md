@@ -24,15 +24,16 @@ Let's get rid of the SPAs! Here's how to get real-time Twig blocks basically. Bi
     # .env
     # ...
     
-    MERCURE_PUBLISH_URL=http://localhost/hub
-    MERCURE_TOKEN=[your-token]
+    MERCURE_PUBLISH_URL=http://localhost/.well-known/mercure
+    MERCURE_JWT_TOKEN=[your-token]
     ```
 
 4. (While the Flex recipe is not done) Create the following configuration file:
    ```yaml
    # config/packages/live_twig.yaml
    live_twig:
-       mercure_hub: "@Symfony\Component\Mercure\PublisherInterface"
+       mercure_publisher: "Symfony\\Component\\Mercure\\PublisherInterface"
+       mercure_public_url: "%env(MERCURE_PUBLISH_URL)%"
    ```
 
 ## Use it!
