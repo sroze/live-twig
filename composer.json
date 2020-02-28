@@ -1,6 +1,7 @@
 {
     "name": "sroze/live-twig",
     "type": "library",
+    "version": "1.0.0",
     "license": "MIT",
     "require": {
         "symfony/framework-bundle": "*",

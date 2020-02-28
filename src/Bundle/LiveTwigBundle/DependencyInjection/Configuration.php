@@ -16,8 +16,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder
             ->getRootNode()
                 ->children()
-                    ->scalarNode('hub_url')->isRequired()->end()
-                    ->scalarNode('hub_token')->isRequired()->end()
+                    ->scalarNode('mercure_publisher')->isRequired()->end()
+                    ->scalarNode('mercure_public_url')->isRequired()->end()
                 ->end()
             ->end()
         ;

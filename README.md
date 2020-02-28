@@ -2,30 +2,38 @@
 
 Let's get rid of the SPAs! Here's how to get real-time Twig blocks basically. Bisous. 😘
 
-## Usage
+## Setup
 
-```
-composer req sroze/live-twig
-```
+0. Install the dependency
+       
+    ```
+    composer req sroze/live-twig
+    ```
 
-## Get Mercure Hub running
+1. Get Mercure Hub running. You can have a look to [the Mercure documentation](https://github.com/dunglas/mercure).
+  Simplest is with Docker:
+    ```
+    docker run --rm -e CORS_ALLOWED_ORIGINS='http://localhost:8000' -e JWT_KEY='!ChangeMe!' -e DEMO=1 -e ALLOW_ANONYMOUS=1 -e PUBLISH_ALLOWED_ORIGINS='http://localhost,http://localhost:8000' -p 80:80 dunglas/mercure
+    ```
+   
+2. Get your Mercure JWT token. If you are using the default demo `JWT_KEY`, you can get the token from
+   [your running hub's homepage.](http://localhost/).
 
-Following [the Mercure documentation](https://github.com/dunglas/mercure) if you don't have it up and running (or [contact me](mailto:samuel.roze@gmail.com) for managed options). 
+3. Set environment variables
+    ```
+    # .env
+    # ...
+    
+    MERCURE_PUBLISH_URL=http://localhost/hub
+    MERCURE_TOKEN=[your-token]
+    ```
 
-TL;DR: Simplest is with Docker:
-```
-docker run --rm -e CORS_ALLOWED_ORIGINS='http://localhost:8000' -e JWT_KEY='!UnsecureChangeMe!' -e DEMO=1 -e ALLOW_ANONYMOUS=1 -e PUBLISH_ALLOWED_ORIGINS='http://localhost,http://localhost:8000' -p 80:80 dunglas/mercure
-```
-
-## Set environment variables
-
-```
-# .env
-# ...
-
-MERCURE_PUBLISH_URL=http://localhost/hub
-MERCURE_TOKEN=[your-token]
-```
+4. (While the Flex recipe is not done) Create the following configuration file:
+   ```yaml
+   # config/packages/live_twig.yaml
+   live_twig:
+       mercure_hub: "@Symfony\Component\Mercure\PublisherInterface"
+   ```
 
 ## Use it!
 
@@ -37,9 +45,3 @@ MERCURE_TOKEN=[your-token]
     )
 }}
 ```
-
----
-
-## TODO
-
-- [ ] Add authentication (generate tokens in Symfony - for publish & consume).
