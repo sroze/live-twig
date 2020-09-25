@@ -1,13 +1,12 @@
 {
     "name": "sroze/live-twig",
     "type": "library",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "license": "MIT",
     "require": {
-        "symfony/framework-bundle": "*",
-        "symfony/mercure-bundle": "*",
-        "symfony/twig-bundle": "*",
-        "symfony/messenger": "*"
+        "symfony/framework-bundle": "^5.1",
+        "symfony/twig-bundle": "^5.1",
+        "symfony/mercure-bundle": "*"
     },
     "require-dev": {
     },
