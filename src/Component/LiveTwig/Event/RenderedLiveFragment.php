@@ -8,15 +8,15 @@ class RenderedLiveFragment extends Event
 {
     public $identifier;
     public $url;
-    public $tags;
+    public $topics;
 
     /**
-     * @param string[] $tags
+     * @param string[] $topics
      */
-    public function __construct(string $identifier, string $url, array $tags)
+    public function __construct(string $identifier, string $url, array $topics)
     {
         $this->identifier = $identifier;
         $this->url = $url;
-        $this->tags = $tags;
+        $this->topics = $topics;
     }
 }

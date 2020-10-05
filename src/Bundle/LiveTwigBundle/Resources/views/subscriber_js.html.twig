@@ -1,27 +1,32 @@
 <script>
-class SymfonyLiveTwig extends HTMLElement {
-  constructor() {
-    super();
-      const url = new URL(
-        this.attributes.getNamedItem('hub').value
-      );
+    class SymfonyLiveTwig extends HTMLElement {
+        constructor() {
+            super();
+            const url = new URL(
+                this.attributes.getNamedItem('hub').value
+            );
 
-      for (const tag of this.attributes.getNamedItem('tags').value.split(',')) {
-          url.searchParams.append('topic', tag);
-      }
+            for (const topic of this.attributes.getNamedItem('topics').value.split(',')) {
+                url.searchParams.append('topic', topic);
+            }
 
-      const eventSource = new EventSource(url);
-      eventSource.onmessage = this.onMessage.bind(this);
-  }
+            const eventSource = new EventSource(url);
+            eventSource.onmessage = this.onMessage.bind(this);
+        }
 
-  async onMessage() {
-    const response = await fetch(
-      this.attributes.getNamedItem('url').value
-    );
+        async onMessage({ data }) {
+            if (data !== '') {
+                this.innerHTML = data;
+                return;
+            }
 
-    this.innerHTML = await response.text();
-  }
-}
+            const response = await fetch(
+                this.attributes.getNamedItem('url').value
+            );
 
-customElements.define('symfony-live-twig', SymfonyLiveTwig);
+            this.innerHTML = await response.text();
+        }
+    }
+
+    customElements.define('symfony-live-twig', SymfonyLiveTwig);
 </script>

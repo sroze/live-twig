@@ -36,8 +36,10 @@ class LiveTwigFragmentRenderer extends RoutableFragmentRenderer
     {
         if (!$uri instanceof ControllerReference) {
             throw new \InvalidArgumentException('Live renderer can only be used with a controller reference.');
-        } else if (!isset($options['tags']) || !\is_array($options['tags'])) {
-            throw new \InvalidArgumentException('The `tags` option must be set and must be an array.');
+        }
+
+        if (!isset($options['topics']) || !\is_array($options['topics'])) {
+            throw new \InvalidArgumentException('The `topics` option must be set and must be an array of strings.');
         }
 
         $fragmentUri = $this->generateSignedFragmentUri($uri, $request);
@@ -49,11 +51,11 @@ class LiveTwigFragmentRenderer extends RoutableFragmentRenderer
         $this->eventDispatcher->dispatch(new RenderedLiveFragment(
             $fragmentId,
             $fragmentUri,
-            $options['tags']
+            $options['topics']
         ));
 
         $content =
-            '<symfony-live-twig id="'.$fragmentId.'" url="'.$fragmentUri.'" tags="'.implode(',', $options['tags']).'" hub="'.$this->hubUrl.'">'.
+            '<symfony-live-twig id="'.$fragmentId.'" url="'.$fragmentUri.'" topics="'.implode(',', $options['topics']).'" hub="'.$this->hubUrl.'">'.
             $response->getContent().
             '</symfony-live-twig>'
         ;

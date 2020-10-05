@@ -7,11 +7,6 @@
     <services>
         <defaults public="false" />
 
-        <service id="Symfony\Component\LiveTwig\MessageHandler\LiveTwigUpdateHandler">
-            <argument /> <!-- Mercure Publisher -->
-            <tag name="messenger.message_handler" />
-        </service>
-
         <service id="Symfony\Component\LiveTwig\Fragment\LiveTwigFragmentRenderer">
             <argument type="service" id="fragment.renderer.inline" />
             <argument type="service" id="uri_signer" />

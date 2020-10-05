@@ -24,9 +24,6 @@ class LiveTwigExtension extends Extension implements PrependExtensionInterface
 
         $loader = new XmlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
         $loader->load('services.xml');
-
-        $container->getDefinition(LiveTwigUpdateHandler::class)
-            ->setArgument(0, new Reference($config['mercure_publisher']));
     }
 
     /**
